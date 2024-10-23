@@ -1,0 +1,50 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // Display welcome screen for 2 seconds
+    setTimeout(() => {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('main-screen').classList.remove('hidden');
+        createBubbles();
+    }, 2000);
+
+    // Coin interaction
+    const coin = document.getElementById('coin');
+    const coinBalance = document.getElementById('coin-balance');
+    let balance = 0;
+
+    coin.addEventListener('click', () => {
+        balance++;
+        coinBalance.innerText = `Coin Balance: ${balance}`;
+        coin.style.transform = 'scale(1.2)';
+        setTimeout(() => coin.style.transform = 'scale(1)', 200);
+    });
+
+    // Navigation
+    document.getElementById('tasks').addEventListener('click', () => {
+        showPage('tasks-page');
+    });
+
+    document.getElementById('mine').addEventListener('click', () => {
+        showPage('main-screen');
+    });
+
+    document.getElementById('invite').addEventListener('click', () => {
+        showPage('invite-page');
+    });
+
+    function showPage(pageId) {
+        document.querySelectorAll('main, section').forEach((section) => {
+            section.classList.add('hidden');
+        });
+        document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    // Create floating bubbles
+    function createBubbles() {
+        const bubbleCount = 5;
+        for (let i = 0; i < bubbleCount; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble bubble' + (i + 1);
+            document.body.appendChild(bubble);
+        }
+    }
+});

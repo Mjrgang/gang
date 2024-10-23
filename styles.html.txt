@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    color: white;
+}
+
+.intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://images.unsplash.com/photo-1599042149053-7c9b6f9984b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+    z-index: 10;
+}
+
+#welcome-text {
+    font-size: 36px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.hidden {
+    display: none;
+}
+
+.coin {
+    width: 150px;
+    height: 150px;
+    background-color: gold;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px;
+    cursor: pointer;
+    font-size: 48px;
+    transition: transform 0.2s ease;
+}
+
+.coin:active {
+    transform: scale(1.2);
+}
+
+.coin-balance {
+    text-align: center;
+    font-size: 24px;
+    margin: 20px 0;
+}
+
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 0;
+}
+
+.nav-item {
+    cursor: pointer;
+    font-size: 16px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Bubbles Animation */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-50px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.bubble {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: float 5s ease-in-out infinite;
+}
+
+/* Position bubbles in random locations */
+.bubble1 { width: 50px; height: 50px; top: 80%; left: 10%; animation-duration: 6s; }
+.bubble2 { width: 60px; height: 60px; top: 70%; left: 30%; animation-duration: 7s; }
+.bubble3 { width: 40px; height: 40px; top: 60%; left: 70%; animation-duration: 5s; }
+.bubble4 { width: 70px; height: 70px; top: 50%; left: 50%; animation-duration: 8s; }
+.bubble5 { width: 30px; height: 30px; top: 90%; left: 20%; animation-duration: 4s; }
