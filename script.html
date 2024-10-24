@@ -1,50 +1,265 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Display welcome screen for 2 seconds
-    setTimeout(() => {
-        document.getElementById('intro-screen').classList.add('hidden');
-        document.getElementById('main-screen').classList.remove('hidden');
-        createBubbles();
-    }, 2000);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mautiahjrgang™</title>
 
-    // Coin interaction
-    const coin = document.getElementById('coin');
-    const coinBalance = document.getElementById('coin-balance');
-    let balance = 0;
-
-    coin.addEventListener('click', () => {
-        balance++;
-        coinBalance.innerText = `Coin Balance: ${balance}`;
-        coin.style.transform = 'scale(1.2)';
-        setTimeout(() => coin.style.transform = 'scale(1)', 200);
-    });
-
-    // Navigation
-    document.getElementById('tasks').addEventListener('click', () => {
-        showPage('tasks-page');
-    });
-
-    document.getElementById('mine').addEventListener('click', () => {
-        showPage('main-screen');
-    });
-
-    document.getElementById('invite').addEventListener('click', () => {
-        showPage('invite-page');
-    });
-
-    function showPage(pageId) {
-        document.querySelectorAll('main, section').forEach((section) => {
-            section.classList.add('hidden');
-        });
-        document.getElementById(pageId).classList.remove('hidden');
-    }
-
-    // Create floating bubbles
-    function createBubbles() {
-        const bubbleCount = 5;
-        for (let i = 0; i < bubbleCount; i++) {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble bubble' + (i + 1);
-            document.body.appendChild(bubble);
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            color: black;
         }
-    }
-});
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1601500078216-b5d7a9adf798?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80') 
+                no-repeat center center;
+            background-size: cover;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .header h1 {
+            font-family: 'Lucida Calligraphy', cursive;
+            font-size: 32px;
+            margin: 0;
+        }
+
+        /* Statement below the Header */
+        .statement {
+            font-family: 'Lucida Calligraphy', cursive;
+            font-size: 20px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Coin */
+        .coin {
+            width: 180px;
+            height: 180px;
+            background-color: gold;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            cursor: pointer;
+            font-size: 48px;
+            transition: transform 0.2s ease;
+        }
+
+        .coin:active {
+            transform: scale(1.2);
+        }
+
+        .coin span {
+            font-weight: bold;
+        }
+
+        /* Coin Balance */
+        .coin-balance {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        /* Star Animation */
+        .star {
+            position: absolute;
+            font-size: 24px;
+            color: yellow;
+            animation: flyToMine 1.5s linear forwards;
+        }
+
+        @keyframes flyToMine {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(300px, 500px);
+                opacity: 0;
+            }
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+        }
+
+        .nav-item span {
+            display: block;
+            font-size: 24px;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coin = document.getElementById('coin');
+            const coinBalance = document.getElementById('coin-balance');
+            const pages = document.querySelectorAll('.page');
+            let balance = parseInt(localStorage.getItem('coinBalance')) || 0;
+            let clickedLinks = new Set();
+
+            function saveState() {
+                localStorage.setItem('coinBalance', balance);
+            }
+
+            function updateBalance() {
+                coinBalance.innerHTML = `<strong>Coin Balance:</strong> <strong style="font-size: 24px;">${balance}</strong>`;
+            }
+
+            function createStar(x, y) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.innerHTML = '⭐';
+                star.style.left = `${x}px`;
+                star.style.top = `${y}px`;
+                document.body.appendChild(star);
+
+                // Remove star after animation ends
+                star.addEventListener('animationend', () => star.remove());
+            }
+
+            function handleCoinTap(event) {
+                const { clientX: x, clientY: y } = event;
+                for (let i = 0; i < 3; i++) {
+                    createStar(x, y);
+                }
+                balance++;
+                updateBalance();
+                saveState();
+            }
+
+            function switchPage(targetId) {
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+            }
+
+            function handleSocialLinkClick(linkId) {
+                if (!clickedLinks.has(linkId)) {
+                    clickedLinks.add(linkId);
+                    balance += 10000;
+                    updateBalance();
+                    saveState();
+                } else {
+                    alert("You've already earned coins from this link!");
+                }
+            }
+
+            coin.addEventListener('click', handleCoinTap);
+
+            document.getElementById('tasks').addEventListener('click', () => switchPage('tasks-page'));
+            document.getElementById('mine').addEventListener('click', () => switchPage('home-page'));
+            document.getElementById('friends').addEventListener('click', () => switchPage('friends-page'));
+            document.getElementById('rank').addEventListener('click', () => switchPage('rank-page'));
+
+            updateBalance();
+        });
+    </script>
+</head>
+<body>
+    <div class="background"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Mautiahjrgang™</h1>
+    </div>
+
+    <!-- Statement -->
+    <div class="statement">
+        Maximum coins capped at 100B, Listing 2 weeks after mining the total amount
+    </div>
+
+    <main id="home-page" class="page active">
+        <div class="coin" id="coin">
+            <span>$GANG</span>
+        </div>
+        <div class="coin-balance" id="coin-balance"></div>
+    </main>
+
+    <section id="tasks-page" class="page">
+        <h2>Follow Us and Earn Coins</h2>
+        <ul>
+            <li><a href="#" onclick="handleSocialLinkClick('twitter')">Twitter</a></li>
+            <li><a href="#" onclick="handleSocialLinkClick('instagram')">Instagram</a></li>
+            <li><a href="#" onclick="handleSocialLinkClick('facebook')">Facebook</a></li>
+        </ul>
+    </section>
+
+    <section id="friends-page" class="page">
+        <h2>Your Invited Friends</h2>
+        <ul id="friends-list">
+            <li>John Doe</li>
+            <li>Jane Smith</li>
+        </ul>
+        <p>Your Referral Link: <a href="#">https://example.com/ref/12345</a></p>
+    </section>
+
+    <section id="rank-page" class="page">
+        <h2>Top 100 Users</h2>
+        <ul id="rank-list">
+            <li>User1 - 500000 coins</li>
+            <li>User2 - 450000 coins</li>
+        </ul>
+    </section>
+
+    <div class="bottom-nav">
+        <div class="nav-item" id="mine"><span>⛏️</span> Mine</div>
+        <div class="nav-item" id="friends"><span>🤗</span> Friends</div>
+        <div class="nav-item" id="tasks"><span>💲</span> Tasks</div>
+        <div class="nav-item" id="rank"><span>🪜</span> Ranking</div>
+    </div>
+</body>
+</html>
+
+
+
+
